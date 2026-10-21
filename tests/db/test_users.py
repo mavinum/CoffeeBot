@@ -1,3 +1,6 @@
+# Copyright (C) 2026 Mavinum
+# SPDX-License-Identifier: GPL-3.0-only
+
 from decimal import ROUND_HALF_UP, Decimal
 from io import StringIO
 from pathlib import Path

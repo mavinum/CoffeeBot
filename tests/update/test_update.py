@@ -1,3 +1,6 @@
+# Copyright (C) 2026 Mavinum
+# SPDX-License-Identifier: GPL-3.0-only
+
 import asyncio
 from functools import partial
 from importlib import metadata

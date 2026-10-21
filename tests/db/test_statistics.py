@@ -1,3 +1,6 @@
+# Copyright (C) 2026 Mavinum
+# SPDX-License-Identifier: GPL-3.0-only
+
 import asyncio
 from datetime import datetime
 from pathlib import Path
