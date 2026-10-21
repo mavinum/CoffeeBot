@@ -1,0 +1,49 @@
+[project]
+name = "coffeebot"
+version = "0.4.0"
+description = "Coffeebot - open source coffee and beverage billing system"
+authors = [{ name = "Mavinum", email = "mavinum@tutanota.de" }]
+readme = "README.md"
+license = "GPL-3.0-only"
+requires-python = ">=3.13"
+dependencies = [
+    "bcrypt>=5.0.0",
+    "filelock>=3.29.5",
+    "loguru>=0.7.3",
+    "numpy>=2.3.3",
+    "openpyxl>=3.1.5",
+    "packaging>=26.2",
+    "platformdirs>=4.5.0",
+    "pyisemail>=2.0.1",
+    "pyqt6>=6.9.1",
+    "webdav4>=0.11.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.8.22,<0.9.0"]
+build-backend = "uv_build"
+
+[project.scripts]
+coffeebot-shortcut = "coffeebot.system.shortcut_manager:create_shortcut"
+
+[project.gui-scripts]
+coffeebot = "coffeebot.startup:main"
+
+[dependency-groups]
+ci = ["ruff>=0.14.5"]
+dev = [
+    "icecream>=2.1.8",
+    "pytest>=9.0.1",
+    "pytest-cov>=7.0.0",
+    "pytest-dependency>=0.6.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+addopts = ["--import-mode=importlib", "--cov=coffeebot"]
+testpaths = ["tests"]
+tmp_path_retention_policy = "none"
+
+[tool.ty.rules]
+possibly-unresolved-reference = "ignore"
+possibly-missing-attribute = "ignore"
