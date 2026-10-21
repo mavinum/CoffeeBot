@@ -1,7 +1,6 @@
 # Coffeebot
 
 [![CI](https://github.com/mavinum/CoffeeBot/actions/workflows/ci.yml/badge.svg)](https://github.com/mavinum/CoffeeBot/actions)
-[![Coverage](https://codecov.io/gh/mavinum/CoffeeBot/branch/master/graph/badge.svg)](https://codecov.io/gh/mavinum/CoffeeBot)
 [![PyPI version](https://img.shields.io/pypi/v/coffeebot)](https://pypi.org/project/coffeebot/)
 [![Python versions](https://img.shields.io/pypi/pyversions/coffeebot)](https://pypi.org/project/coffeebot/)
 [![License: GPL-3.0-only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://github.com/mavinum/CoffeeBot/blob/master/LICENSE)
