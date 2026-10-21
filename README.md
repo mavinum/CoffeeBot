@@ -1,7 +1,11 @@
 # Coffeebot
 
 [![CI](https://github.com/mavinum/CoffeeBot/actions/workflows/ci.yml/badge.svg)](https://github.com/mavinum/CoffeeBot/actions)
+[![Coverage](https://codecov.io/gh/mavinum/CoffeeBot/branch/master/graph/badge.svg)](https://codecov.io/gh/mavinum/CoffeeBot)
 [![PyPI version](https://img.shields.io/pypi/v/coffeebot)](https://pypi.org/project/coffeebot/)
+[![Python versions](https://img.shields.io/pypi/pyversions/coffeebot)](https://pypi.org/project/coffeebot/)
+[![License: GPL-3.0-only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://github.com/mavinum/CoffeeBot/blob/master/LICENSE)
+[![Platform: Linux](https://img.shields.io/badge/platform-Linux-FCC624?logo=linux&logoColor=black)](https://github.com/mavinum/CoffeeBot)
 
 CoffeeBot is a lightweight open source coffee and beverage billing companion for shared spaces.<br>
 It helps teams track purchases, manage users and bring the classic "tick list" to the digital age. All you need is a RaspberryPi with touchscreen.
