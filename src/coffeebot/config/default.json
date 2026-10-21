@@ -1,0 +1,46 @@
+{
+    "welcome": "I am the Coffee Bot \u2615 and very happy to welcome you to our coffee community! \u0001f973",
+    "cat_1_price": 0.40,
+    "cat_2_price": 0.80,
+    "cat_3_price": 1.00,
+    "cat_1_items": [
+        "Milk",
+        "Water",
+        "Expresso"
+    ],
+    "cat_2_items": [
+        "Doppio",
+        "Cappuccino"
+    ],
+    "cat_3_items": [
+        "Coke",
+        "Juice",
+        "Lemonade"
+    ],
+    "logo_file": "logo.png",
+    "db_file": "user_data.db",
+    "info_text": "<b>Hello, I am your Coffeebot, and here to help you keep track of your coffee and drinks payments :)</b>\nTo sign up for the beverage list, just press the \"+\" button in the side bar on the left.",
+    "challenge_goal": 100,
+    "challenge_current": 0,
+    "tracked_categories": {
+        "cat_1": true,
+        "cat_2": false,
+        "cat_3": false
+    },
+    "challenge_rewards": [
+        "One Espresso for free",
+        "One Softdrink for free",
+        "Cleaning the Coffee Machine"
+    ],
+    "selected_reward": "One Expresso for free",
+    "bot_startup": false,
+    "auto_check_update": true,
+    "webdav_enabled": false,
+    "auto_backup_enabled": false,
+    "auto_restart": false,
+    "restart_timeout": 10,
+    "lock_timeout": 20,
+    "backup_interval": 24,
+    "log_level": "INFO",
+    "master_pwd_hash": "$2b$12$qdPpge45nUK161uvtP8wJeFWA9wqme6vPkBAx9PoDfCg/xwxMeAne"
+}
