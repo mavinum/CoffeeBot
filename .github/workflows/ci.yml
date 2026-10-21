@@ -33,6 +33,10 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+      - name: Install Qt system libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libegl1
       - name: Install the project
         run: uv sync --locked --all-extras --dev --group ci
       - name: Run pytests
