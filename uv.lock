@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -141,7 +141,7 @@ requires-dist = [
     { name = "packaging", specifier = ">=26.2" },
     { name = "platformdirs", specifier = ">=4.5.0" },
     { name = "pyisemail", specifier = ">=2.0.1" },
-    { name = "pyqt6", specifier = ">=6.9.1" },
+    { name = "pyqt6", specifier = "==6.11.0" },
     { name = "webdav4", specifier = ">=0.11.0" },
 ]
 

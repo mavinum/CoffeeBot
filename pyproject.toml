@@ -15,7 +15,7 @@ dependencies = [
     "packaging>=26.2",
     "platformdirs>=4.5.0",
     "pyisemail>=2.0.1",
-    "pyqt6>=6.9.1",
+    "pyqt6==6.11.0",
     "webdav4>=0.11.0",
 ]
 
@@ -28,6 +28,7 @@ coffeebot-shortcut = "coffeebot.system.shortcut_manager:create_shortcut"
 
 [project.gui-scripts]
 coffeebot = "coffeebot.startup:main"
+coffeebot-launch = "coffeebot.system.shortcut_manager:launch_app"
 
 [dependency-groups]
 ci = ["ruff>=0.14.5"]
