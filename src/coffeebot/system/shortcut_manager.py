@@ -23,15 +23,57 @@ for more details.
 ################################################################################
 """
 
+import os
 import shutil
 from importlib.metadata import distribution
 from pathlib import Path
 
 from loguru import logger
 
+from coffeebot.config.settings import Settings
+from coffeebot.system.systemd_manager import SystemdManager
+
 PKG_NAME = "coffeebot"
 APP_NAME = "CoffeeBot"
 ICON_NAME = "icon.svg"
+LAUNCHER_NAME = "coffeebot-launch"
+
+
+def _find_executable(name: str) -> str | None:
+    """Find an installed executable, including uv's default user bin directory."""
+    executable = shutil.which(name)
+    if executable:
+        return executable
+
+    uv_executable = Path.home() / ".local" / "bin" / name
+    return str(uv_executable) if uv_executable.is_file() else None
+
+
+def launch_app() -> int:
+    """Restart the configured systemd service or launch CoffeeBot directly."""
+    Settings.configure_app("Coffeebot", "Mavinum")
+    manager = SystemdManager()
+
+    if manager.service_exists and (manager.service_running or manager.service_enabled):
+        success, message = manager.restart()
+        if success:
+            logger.info("Restarted CoffeeBot systemd service.")
+            return 0
+        logger.error(f"Could not restart CoffeeBot systemd service: {message}")
+        return 1
+
+    executable = _find_executable(PKG_NAME)
+    if not executable:
+        logger.error("Could not find the 'coffeebot' executable in PATH or ~/.local/bin.")
+        return 1
+
+    logger.info("No active or enabled CoffeeBot systemd service; launching the application.")
+    try:
+        os.execv(executable, [executable])  # noqa: S606
+    except OSError as exc:
+        logger.error(f"Could not launch CoffeeBot: {exc}")
+        return 1
+    return 0
 
 
 def create_shortcut() -> bool:
@@ -39,13 +81,13 @@ def create_shortcut() -> bool:
     Create a .desktop file on the user's desktop.
 
     Assumes the application is installed via `uv tool install`.
-    The shortcut points to the 'coffeebot' binary in the uv bin directory
+    The shortcut points to the service-aware launcher in the uv bin directory
     and uses 'icon.svg' from the installed package directory.
     """
     try:
-        executable = shutil.which("coffeebot")
-        if not executable:
-            logger.error("Could not find 'coffeebot' binary in PATH.")
+        launcher = _find_executable(LAUNCHER_NAME)
+        if not launcher:
+            logger.error(f"Could not find '{LAUNCHER_NAME}' binary in PATH or ~/.local/bin.")
             return False
         try:
             package_path = Path(str(distribution(PKG_NAME).locate_file(""))).parent
@@ -70,7 +112,7 @@ def create_shortcut() -> bool:
         content = [
             "[Desktop Entry]",
             f"Name={APP_NAME}",
-            f"Exec={executable}",
+            f"Exec={launcher}",
             f"Icon={icon_path}" if icon_path and icon_path.exists() else "",
             "Type=Application",
             "Terminal=false",

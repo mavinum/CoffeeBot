@@ -139,14 +139,14 @@ class SystemdManager:
     @property
     def service_running(self) -> bool:
         """Return if service is active (running)."""
-        cmd = [f"systemctl --user is-active --quiet show {self.config.service_name}"]
+        cmd = [f"systemctl --user is-active --quiet {self.config.service_name}"]
         success, _ = self._run_cmd(cmd)
         return success
 
     @property
     def service_enabled(self) -> bool:
         """Return if service is enabled."""
-        cmd = [f"systemctl --user is-enabled --quiet show {self.config.service_name}"]
+        cmd = [f"systemctl --user is-enabled --quiet {self.config.service_name}"]
         success, _ = self._run_cmd(cmd)
         return success
 
