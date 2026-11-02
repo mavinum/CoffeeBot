@@ -25,9 +25,11 @@ for more details.
 """
 
 import sys
+from importlib.resources import files
 from pathlib import Path
 
 from loguru import logger
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 
 from coffeebot.config.settings import Settings
@@ -83,6 +85,11 @@ def main() -> None:  # noqa: D103
 
     # defaultfont = QFont("Roboto", 10)
     app = QApplication(sys.argv)
+    app.setApplicationName("CoffeeBot")
+    app.setApplicationDisplayName("CoffeeBot")
+    app.setOrganizationName("Mavinum")
+    app.setDesktopFileName("CoffeeBot")
+    app.setWindowIcon(QIcon(str(files("coffeebot").joinpath("ressources", "icons", "icon.svg"))))
     # app.setFont(defaultfont)
     app.setStyle("Fusion")
     ex = CoffeeBot()

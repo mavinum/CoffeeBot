@@ -34,8 +34,8 @@ from typing import cast
 from loguru import logger
 from PyQt6 import uic
 from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QGuiApplication, QMovie, QPixmap
-from PyQt6.QtWidgets import QAbstractItemView, QMainWindow, QMessageBox, QPushButton, QScroller, QTableWidgetItem
+from PyQt6.QtGui import QGuiApplication, QIcon, QMovie, QPixmap
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QPushButton, QScroller, QTableWidgetItem
 
 from coffeebot.config.settings import Settings
 from coffeebot.db.users import Rating, UserDB
@@ -87,6 +87,8 @@ class CoffeeBot(QMainWindow, MainWindowUI):
     def init_ui(self) -> None:  # noqa: PLR0915
         """Inizialize UI and UI elements."""
         self.setupUi(self)
+        self.setWindowTitle("CoffeeBot")
+        self.setWindowIcon(QIcon(str(files("coffeebot").joinpath("ressources", "icons", "icon.svg"))))
 
         #  Set window attributes and position
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
@@ -104,7 +106,6 @@ class CoffeeBot(QMainWindow, MainWindowUI):
         self.home_button.setChecked(True)
 
         # Signals and Slots
-        self.user_table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.user_table.cellClicked.connect(self._select_user)
         self.user_table.currentCellChanged.connect(self._select_user)
         QScroller.grabGesture(self.user_table, QScroller.ScrollerGestureType.TouchGesture)
