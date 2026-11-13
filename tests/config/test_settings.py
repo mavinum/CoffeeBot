@@ -8,6 +8,7 @@ import pytest
 from PyQt6.QtWidgets import QDoubleSpinBox, QLabel, QPushButton
 
 from coffeebot.config.settings import Settings
+from coffeebot.gui.widgets import settings_widget
 from coffeebot.gui.widgets.settings_widget import SettingsWidget
 
 
@@ -132,3 +133,35 @@ def test_settings_widget_builds_about_tab(monkeypatch: pytest.MonkeyPatch, tmp_p
     assert repo_button is not None
     assert title_label.text().lower() == "coffeebot"
     assert "open source" in description_label.text().lower()
+
+
+@pytest.mark.usefixtures("qapp")
+def test_about_buttons_open_their_urls(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """Verify both About buttons send their target URLs to the system URL handler."""
+    Settings.configure_app(
+        "CoffeeBot", "Mavinum", config_dir=tmp_path / "config", default_path=tmp_path / "default.json"
+    )
+    opened_urls: list[str] = []
+    monkeypatch.setattr(
+        settings_widget.QDesktopServices, "openUrl", lambda url: opened_urls.append(url.toString()) or True
+    )
+
+    widget = SettingsWidget()
+    widget.about_repo_button.click()
+    widget.about_license_button.click()
+
+    assert opened_urls == [
+        "https://github.com/mavinum/CoffeeBot",
+        "https://github.com/mavinum/CoffeeBot/blob/master/LICENSE",
+    ]
+
+
+def test_open_external_url_falls_back_to_default_browser(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Use Python's browser launcher if Qt cannot handle the URL."""
+    opened_urls: list[str] = []
+    monkeypatch.setattr(settings_widget.QDesktopServices, "openUrl", lambda _url: False)
+    monkeypatch.setattr(settings_widget.webbrowser, "open", lambda url, new: opened_urls.append(url) or True)
+
+    settings_widget.SettingsWidget._open_external_url("https://github.com/mavinum/CoffeeBot")
+
+    assert opened_urls == ["https://github.com/mavinum/CoffeeBot"]

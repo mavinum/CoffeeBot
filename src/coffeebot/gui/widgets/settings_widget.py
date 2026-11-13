@@ -25,14 +25,15 @@ import shutil
 import tempfile
 import time
 import typing
+import webbrowser
 from pathlib import Path
 from typing import Any
 
 from loguru import logger
 from openpyxl import Workbook
 from PyQt6 import uic
-from PyQt6.QtCore import QDir, Qt, pyqtSignal
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import QDir, Qt, QUrl, pyqtSignal
+from PyQt6.QtGui import QDesktopServices, QPixmap
 from PyQt6.QtWidgets import QCheckBox, QDoubleSpinBox, QFileDialog, QLineEdit, QSpinBox, QTextEdit, QWidget
 
 from coffeebot.auth import set_master_password
@@ -97,6 +98,12 @@ class SettingsWidget(QWidget, SettingsWidgetUI):
         self.save_button.clicked.connect(self._save)
         self.restart_button.clicked.connect(self._restart)
         self.close_button.clicked.connect(self.close_signal.emit)
+        self.about_repo_button.clicked.connect(
+            lambda _checked=False: self._open_external_url("https://github.com/mavinum/CoffeeBot")
+        )
+        self.about_license_button.clicked.connect(
+            lambda _checked=False: self._open_external_url("https://github.com/mavinum/CoffeeBot/blob/master/LICENSE")
+        )
 
         self.select_logo_button.clicked.connect(self._select_logo)
 
@@ -128,6 +135,14 @@ class SettingsWidget(QWidget, SettingsWidgetUI):
         self.restart_timeout_spin.valueChanged.connect(self._mark_autostart_modified)
         self.autostart_apply_button.clicked.connect(self._apply_autostart_settings)
         self.autostart_apply_button.setVisible(False)
+
+    @staticmethod
+    def _open_external_url(url: str) -> None:
+        """Open a URL with the system handler, falling back to Python's browser launcher."""
+        if QDesktopServices.openUrl(QUrl(url)):
+            return
+        if not webbrowser.open(url, new=2):
+            logger.error(f"Could not open URL in the default browser: {url}")
 
     @typing.override
     def showEvent(self, a0) -> None:
