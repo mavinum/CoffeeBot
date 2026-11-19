@@ -35,7 +35,7 @@ from loguru import logger
 from PyQt6 import uic
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QGuiApplication, QIcon, QMovie, QPixmap
-from PyQt6.QtWidgets import QMainWindow, QMessageBox, QPushButton, QScroller, QTableWidgetItem, QWidget
+from PyQt6.QtWidgets import QHeaderView, QMainWindow, QMessageBox, QPushButton, QScroller, QTableWidgetItem, QWidget
 
 from coffeebot.config.settings import Settings
 from coffeebot.db.users import Rating, UserDB
@@ -106,6 +106,13 @@ class CoffeeBot(QMainWindow, MainWindowUI):
         self.home_button.setChecked(True)
         self._disable_input_method_tree(self.user_table)
         self._disable_input_method_tree(self.info_field)
+
+        header = self.user_table.horizontalHeader()
+        header.setStretchLastSection(False)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Fixed)
+        self.user_table.setColumnWidth(2, 135)
 
         # Signals and Slots
         self.user_table.cellClicked.connect(self._select_user)
@@ -251,9 +258,7 @@ class CoffeeBot(QMainWindow, MainWindowUI):
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
 
             self.user_table.setItem(i, 0, _id)
-            self.user_table.resizeColumnToContents(0)
             self.user_table.setItem(i, 1, name)
-            self.user_table.resizeColumnToContents(1)
             self.user_table.setItem(i, 2, balance)
 
     def _select_user(self, row) -> None:

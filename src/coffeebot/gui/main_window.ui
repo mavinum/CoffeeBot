@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1232</width>
-    <height>677</height>
+    <height>685</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -419,16 +419,16 @@ QToolButton#lock_button_2::checked {
         <number>10</number>
        </property>
        <property name="leftMargin">
-        <number>15</number>
+        <number>18</number>
        </property>
        <property name="topMargin">
-        <number>15</number>
+        <number>18</number>
        </property>
        <property name="rightMargin">
-        <number>15</number>
+        <number>18</number>
        </property>
        <property name="bottomMargin">
-        <number>15</number>
+        <number>18</number>
        </property>
        <item>
         <widget class="QStackedWidget" name="main_stack">
@@ -678,14 +678,14 @@ QPushButton::pressed {
             <number>0</number>
            </property>
            <property name="spacing">
-            <number>10</number>
+            <number>15</number>
            </property>
            <item row="0" column="0" rowspan="5">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_4">
                <property name="rightMargin">
-                <number>24</number>
+                <number>0</number>
                </property>
                <item>
                 <widget class="QLabel" name="label_7">
@@ -754,6 +754,8 @@ padding: 10px 30px;</string>
 QTableWidget::item {
 	color: rgb(80, 61, 61);
 	background-color: rgba(200, 183, 183, 150);
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 QTableWidget::item:selected{

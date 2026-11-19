@@ -29,7 +29,7 @@ User information entered into profile fields may be inaccurate or contain additi
 - **Telegram:** The current release does not connect to Telegram or transmit profile data to it. The optional Telegram Chat-ID field is stored locally in the user profile and is currently unused by the application.
 - **WebDAV:** When configured, WebDAV export can upload CSV/XLSX exports. Automatic or manual backups can upload the SQLite database, logs, and settings file to the configured server. Those files can include personal data and credentials. The WebDAV provider and anyone with access to that account or server may therefore have access to the uploaded copies.
 
-CoffeeBot stores its local database and JSON settings as files; the application does not encrypt those files at rest. The master-password hash does not encrypt the database or protect exported files. Restrict operating-system account and file access, and secure any removable media, backups, and WebDAV destination. Keep integration credentials confidential and use appropriately scoped credentials where possible.
+CoffeeBot stores its local database and JSON settings as files without encryption at rest. If configured, the WebDAV password is currently stored in clear text in the JSON settings file. The master-password hash does not encrypt the database or protect exported files. Restrict operating-system account and file access, and secure any removable media, backups, and WebDAV destination. Keep integration credentials confidential and use appropriately scoped credentials where possible.
 
 ## Retention, deletion, and user requests
 

@@ -24,6 +24,7 @@ for more details.
 ################################################################################
 """
 
+import os
 import sys
 from importlib.resources import files
 from pathlib import Path
@@ -70,6 +71,19 @@ def handle_exception(exc_type, exc_value, exc_tb) -> None:
     sys.exit(1)
 
 
+def _configure_qt_logging_rules() -> None:
+    """Suppress the known Wayland text-input warning while preserving other Qt rules."""
+    target_rule = "qt.qpa.wayland.textinput.warning=false"
+    target_category = target_rule.partition("=")[0]
+    rules = [
+        rule.strip()
+        for rule in os.environ.get("QT_LOGGING_RULES", "").split(";")
+        if rule.strip() and rule.partition("=")[0].strip() != target_category
+    ]
+    rules.append(target_rule)
+    os.environ["QT_LOGGING_RULES"] = ";".join(rules)
+
+
 # endregion
 
 
@@ -84,6 +98,7 @@ def main() -> None:  # noqa: D103
     )
 
     # defaultfont = QFont("Roboto", 10)
+    _configure_qt_logging_rules()
     app = QApplication(sys.argv)
     app.setApplicationName("CoffeeBot")
     app.setApplicationDisplayName("CoffeeBot")
