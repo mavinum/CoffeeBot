@@ -446,7 +446,7 @@ QToolButton#lock_button_2::checked {
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_18" stretch="1,1">
            <item>
-            <widget class="QLineEdit" name="code_label">
+            <widget class="QLabel" name="code_label">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
