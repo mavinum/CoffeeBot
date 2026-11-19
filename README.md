@@ -1,10 +1,11 @@
-# Coffeebot
+<h1><img src="src/coffeebot/ressources/icons/icon.svg" alt="CoffeeBot icon" width="40" align="center"> CoffeeBot</h1>
 
 [![CI](https://github.com/mavinum/CoffeeBot/actions/workflows/ci.yml/badge.svg)](https://github.com/mavinum/CoffeeBot/actions)
 [![PyPI version](https://img.shields.io/pypi/v/coffeebot)](https://pypi.org/project/coffeebot/)
-[![Python versions](https://img.shields.io/pypi/pyversions/coffeebot)](https://pypi.org/project/coffeebot/)
+![Python version](https://img.shields.io/badge/python-3.14-blue)
 [![License: GPL-3.0-only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://github.com/mavinum/CoffeeBot/blob/master/LICENSE)
 [![Platform: Linux](https://img.shields.io/badge/platform-Linux-FCC624?logo=linux&logoColor=black)](https://github.com/mavinum/CoffeeBot)
+[![Raspberry Pi OS: Debian 13 (Trixie)](https://img.shields.io/badge/Raspberry%20Pi%20OS-Debian%2013%20%28Trixie%29-C51A4A?logo=raspberrypi&logoColor=white)](https://www.raspberrypi.com/software/)
 
 CoffeeBot is a lightweight open source coffee and beverage billing companion for shared spaces.<br>
 It helps teams track purchases, manage users and bring the classic "tick list" to the digital age. All you need is a RaspberryPi with touchscreen.
@@ -18,6 +19,7 @@ It helps teams track purchases, manage users and bring the classic "tick list" t
 - **Telegram integration** – coming soon; Telegram connectivity is not available in this release
 - **Small footprint** – intended for use on a Raspberry Pi with touchscreen
 
+![CoffeeBot main window](doc/screenshot.png)
 
 ## Download / Install
 Use uv to install on your system (recommended):
@@ -38,6 +40,19 @@ uv run coffeebot
 ```
 Instead of the `uv run coffeebot` command, you can also simply use the provided `coffeebot` entry point.
 
+### Command-line entry points
+
+The following entry points are available when CoffeeBot is installed with `uv tool install coffeebot`:
+
+- `coffeebot` — start the CoffeeBot application.
+- `coffeebot-launch` — restart the CoffeeBot systemd service if it is active or enabled; otherwise, launch the application.
+- `coffeebot-shortcut` — create a CoffeeBot desktop shortcut.
+- `coffeebot-migrate` — copy an existing database and/or settings file into the locations configured for CoffeeBot. Pass `--db` and/or `--config`, for example:
+
+  ```bash
+  coffeebot-migrate --db /path/to/user_data.db --config /path/to/config.json
+  ```
+
 ## Documentation
 - [Operator guide: data privacy](https://github.com/mavinum/CoffeeBot/blob/master/doc/OPERATORS_DATA_PRIVACY.md)
 
@@ -56,7 +71,7 @@ See the [LICENSE](https://github.com/mavinum/CoffeeBot/blob/master/LICENSE).
 ## Third-Party Notices
 This project uses third-party software and libraries. See the [third-party notices](https://github.com/mavinum/CoffeeBot/blob/master/doc/THIRD_PARTY_NOTICES.md).
 
-## Warranty Disclaimer
+## Disclaimer
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, version 3 only.

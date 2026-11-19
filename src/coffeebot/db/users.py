@@ -194,7 +194,7 @@ class UserDB:
         if not self.is_connected():
             return None
         _, cursor = self.require_connection()
-        cursor.execute(f"SELECT * FROM {USERS}")
+        cursor.execute(f"SELECT id, forename, surename, workgroup, email, telegram_id, balance FROM {USERS}")
         logger.debug("Loading user data from DB")
         return cursor.fetchall()
 
@@ -213,7 +213,7 @@ class UserDB:
             return None
 
         _, cursor = self.require_connection()
-        query = f"SELECT * FROM {USERS} WHERE ID=:id"
+        query = f"SELECT id, forename, surename, workgroup, email, telegram_id, balance FROM {USERS} WHERE ID=:id"
         cursor.execute(query, {"id": user_id})
         data = cursor.fetchone()
 
