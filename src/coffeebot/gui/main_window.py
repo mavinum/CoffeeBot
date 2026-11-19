@@ -35,7 +35,7 @@ from loguru import logger
 from PyQt6 import uic
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QGuiApplication, QIcon, QMovie, QPixmap
-from PyQt6.QtWidgets import QMainWindow, QMessageBox, QPushButton, QScroller, QTableWidgetItem
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QPushButton, QScroller, QTableWidgetItem, QWidget
 
 from coffeebot.config.settings import Settings
 from coffeebot.db.users import Rating, UserDB
@@ -92,8 +92,8 @@ class CoffeeBot(QMainWindow, MainWindowUI):
 
         #  Set window attributes and position
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
-        width = QGuiApplication.primaryScreen().availableGeometry().width()  # ty:ignore[unresolved-attribute]
-        height = QGuiApplication.primaryScreen().availableGeometry().height()  # ty:ignore[unresolved-attribute]
+        width = QGuiApplication.primaryScreen().availableGeometry().width()  # ty: ignore[missing-union-attribute]
+        height = QGuiApplication.primaryScreen().availableGeometry().height()  # ty: ignore[missing-union-attribute]
 
         if width < 1300 and height < 900:
             # self.showFullScreen()
@@ -104,6 +104,8 @@ class CoffeeBot(QMainWindow, MainWindowUI):
 
         self.icons_text_widget.hide()
         self.home_button.setChecked(True)
+        self._disable_input_method_tree(self.user_table)
+        self._disable_input_method_tree(self.info_field)
 
         # Signals and Slots
         self.user_table.cellClicked.connect(self._select_user)
@@ -168,6 +170,13 @@ class CoffeeBot(QMainWindow, MainWindowUI):
         self.settings_widget.info_link_button.clicked.connect(
             lambda: (self.edit_info_widget.load(), self.main_stack.setCurrentWidget(self.edit_info_page))
         )
+
+    @staticmethod
+    def _disable_input_method_tree(widget: QWidget) -> None:
+        """Disable input-method support and keyboard focus for a read-only widget tree."""
+        for child in (widget, *widget.findChildren(QWidget)):
+            child.setAttribute(Qt.WidgetAttribute.WA_InputMethodEnabled, False)
+            child.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
     def _init_updater(self) -> None:
         """Initialize updater for version checking and upgrading."""
@@ -236,12 +245,15 @@ class CoffeeBot(QMainWindow, MainWindowUI):
             _id = QTableWidgetItem()
             _id.setTextAlignment(Qt.AlignmentFlag.AlignVCenter + Qt.AlignmentFlag.AlignRight)
             _id.setData(Qt.ItemDataRole.DisplayRole, user[0])
-            self.user_table.resizeColumnToContents(0)
-            self.user_table.setItem(i, 0, _id)
-            self.user_table.setItem(i, 1, QTableWidgetItem(f"{user[1]} {user[2]}"))
-            self.user_table.resizeColumnToContents(1)
-
+            name = QTableWidgetItem(f"{user[1]} {user[2]}")
             balance = PriceItem(f"{float(user[6]):.2f} \u20ac")
+            for item in (_id, name, balance):
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+
+            self.user_table.setItem(i, 0, _id)
+            self.user_table.resizeColumnToContents(0)
+            self.user_table.setItem(i, 1, name)
+            self.user_table.resizeColumnToContents(1)
             self.user_table.setItem(i, 2, balance)
 
     def _select_user(self, row) -> None:
@@ -272,7 +284,7 @@ class CoffeeBot(QMainWindow, MainWindowUI):
         if self.user_id is None:
             return
 
-        category = self.sender().objectName().strip("_button")  # ty:ignore[unresolved-attribute]
+        category = self.sender().objectName().strip("_button")
         price = self.config[f"{category}_price"]
         self.db.bill(self.user_id, category, price)
         self._show_enjoy_gif()
@@ -625,7 +637,7 @@ class CoffeeBot(QMainWindow, MainWindowUI):
 
         os.execv(sys.executable, [sys.executable, *sys.argv])  # noqa: S606
 
-    def closeEvent(self, event) -> None:  # noqa: N802  # ty:ignore[invalid-method-override]
+    def closeEvent(self, event) -> None:  # noqa: N802
         """Cleanup before closing."""
         if self.webdav_manager is not None:
             self.webdav_manager.stop()
