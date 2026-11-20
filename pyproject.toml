@@ -9,6 +9,7 @@ requires-python = "~=3.14.0"
 dependencies = [
     "bcrypt>=5.0.0",
     "filelock>=3.29.5",
+    "keyring>=25.7.0",
     "loguru>=0.7.3",
     "numpy>=2.3.3",
     "openpyxl>=3.1.5",
@@ -16,6 +17,7 @@ dependencies = [
     "platformdirs>=4.5.0",
     "pyisemail>=2.0.1",
     "pyqt6>=6.12.1",
+    "secretstorage>=3.5.0",
     "webdav4>=0.11.0",
 ]
 

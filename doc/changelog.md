@@ -9,7 +9,7 @@ Initial public release of CoffeeBot
 - Configurable beverage categories and prices
 - Usage statistics and CSV/XLSX data exports
 - Local SQLite storage, including automatic migration of legacy user databases
-- WebDAV backups and a command-line tool to import existing database and settings files
+- WebDAV backups with credential stored in OS keyring
 - `coffeebot-launch` for service-aware launching and `coffeebot-shortcut` for creating a desktop shortcut and `coffeebot-migrate` for importing user databases or config files
 - `uv tool install coffeebot` installation, with PyPI publishing and version checks through GitHub Actions
 

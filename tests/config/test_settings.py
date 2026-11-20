@@ -116,6 +116,39 @@ def test_settings_widget_load_and_save_round_trip(tmp_path: Path, monkeypatch: p
 
 
 @pytest.mark.usefixtures("qapp")
+def test_webdav_secret_is_stored_in_keyring_not_settings(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Keep WebDAV credentials out of the JSON settings file."""
+    monkeypatch.setattr("importlib.metadata.version", lambda _name: "1.0.0")
+    default_path = tmp_path / "default.json"
+    config_dir = tmp_path / "config"
+    default_path.write_text(
+        json.dumps({"data_dir": str(config_dir), "logo_file": "logo.png", "backup_interval": 24}),
+        encoding="utf-8",
+    )
+    settings = Settings.configure_app(
+        "coffeebot", "Mavinum", config_dir=config_dir, default_path=default_path, config_filename="config.json"
+    )
+    stored_credentials: list[str] = []
+    monkeypatch.setattr(settings_widget, "store_webdav_credential", stored_credentials.append)
+
+    widget = SettingsWidget()
+    widget.load()
+    widget.webdav_enabled_check.setChecked(True)
+    widget.webdav_url_edit.setText("https://webdav.example.invalid/")
+    widget.webdav_username_edit.setText("coffee-user")
+    widget.webdav_password_edit.setText("test-token")
+
+    widget.webdav_apply_button.click()
+
+    assert stored_credentials == ["test-token"]
+    assert widget.webdav_password_edit.text() == ""
+    assert "webdav_password" not in settings.as_dict()
+    assert "test-token" not in settings.path.read_text(encoding="utf-8")
+
+
+@pytest.mark.usefixtures("qapp")
 def test_settings_widget_builds_about_tab(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """Test that the about tab in SettingsWidget is correctly constructed."""
     monkeypatch.setattr("importlib.metadata.version", lambda _name: "0.4.0")

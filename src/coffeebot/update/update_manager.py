@@ -31,10 +31,10 @@ from coffeebot.config.settings import Settings
 class UpdateManager(QThread):
     """Thread to handle app update and restart."""
 
-    upgrade_started = pyqtSignal()
-    upgrade_completed = pyqtSignal()
-    upgrade_failed = pyqtSignal(str)
-    upgrade_finished = pyqtSignal()
+    upgrade_started = pyqtSignal()  # ty: ignore[missing-argument]
+    upgrade_completed = pyqtSignal()  # ty: ignore[missing-argument]
+    upgrade_failed = pyqtSignal(str)  # ty: ignore[missing-argument]
+    upgrade_finished = pyqtSignal()  # ty: ignore[missing-argument]
 
     def __init__(self, on_restart: Callable | None = None):
         super().__init__()

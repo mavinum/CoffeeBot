@@ -1169,7 +1169,7 @@ Planned Features:
             <item row="4" column="0" colspan="2">
              <widget class="QLabel" name="label_30">
               <property name="text">
-               <string>App Password / Token::</string>
+               <string>App Password / Token (stored in OS keyring):</string>
               </property>
              </widget>
             </item>

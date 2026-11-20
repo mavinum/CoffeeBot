@@ -33,9 +33,9 @@ from coffeebot.config.settings import Settings
 class UpdateChecker(QThread):
     """Thread to check for new version on PyPi in the background."""
 
-    update_available = pyqtSignal(str)
-    error = pyqtSignal(str)
-    up_to_date = pyqtSignal(str)
+    update_available = pyqtSignal(str)  # ty: ignore[missing-argument]
+    error = pyqtSignal(str)  # ty: ignore[missing-argument]
+    up_to_date = pyqtSignal(str)  # ty: ignore[missing-argument]
 
     def __init__(self, check_interval: int = 3600, auto_check: bool = True):  # noqa: FBT002
         super().__init__()

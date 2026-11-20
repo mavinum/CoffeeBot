@@ -66,7 +66,7 @@ class PriceButton(QPushButton):
 class EmailValidator(QValidator):
     """Validate the string syntax of an email input field."""
 
-    def validate(self, input_str: str, pos: int) -> tuple[QValidator.State, str, int]:  # ty:ignore[invalid-method-override]
+    def validate(self, input_str: str, pos: int) -> tuple[QValidator.State, str, int]:  # ty: ignore[incompatible-method-override]
         """Reimplement to validate email format."""
         if " " in input_str:
             return (QValidator.State.Invalid, input_str, pos)
@@ -74,7 +74,7 @@ class EmailValidator(QValidator):
             return (QValidator.State.Acceptable, input_str, pos)
         return (QValidator.State.Intermediate, input_str, pos)
 
-    def fixup(self, input_str: str) -> str:  # ty:ignore[invalid-method-override]
+    def fixup(self, input_str: str) -> str:  # ty: ignore[incompatible-method-override]
         """Reimplement to remove whitespaces."""
         return input_str.strip()
 
@@ -93,11 +93,11 @@ class PasswordDialog(QInputDialog):
 class AuthenticationWidget(QWidget, AuthenticationWidgetUI):
     """Widget with password prompt for user authentication."""
 
-    cancel_signal = pyqtSignal()
-    confirm_signal = pyqtSignal(str)
+    cancel_signal = pyqtSignal()  # ty: ignore[missing-argument]
+    confirm_signal = pyqtSignal(str)  # ty: ignore[missing-argument]
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(parent)  # ty: ignore[invalid-argument-type]
         self._config = Settings.get_instance()
         self.setupUi(self)
         self.setStyleSheet(WIDGET_STYLE)
@@ -143,11 +143,11 @@ class AuthenticationWidget(QWidget, AuthenticationWidgetUI):
 class ResetChallengeWidget(QWidget, ResetChallengeWidgetUI):
     """Widget to edit or reset challenge settings."""
 
-    cancel_signal = pyqtSignal()
-    confirm_signal = pyqtSignal()
+    cancel_signal = pyqtSignal()  # ty: ignore[missing-argument]
+    confirm_signal = pyqtSignal()  # ty: ignore[missing-argument]
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(parent)  # ty: ignore[invalid-argument-type]
         self.setupUi(self)
         self.setStyleSheet(WIDGET_STYLE)
         self._config = Settings.get_instance()
@@ -235,11 +235,11 @@ class ResetChallengeWidget(QWidget, ResetChallengeWidgetUI):
 class EditInfoWidget(QWidget, EditInfoWidgetUI):
     """Widget to edit the text the main pages info fields."""
 
-    cancel_signal = pyqtSignal()
-    confirm_signal = pyqtSignal()
+    cancel_signal = pyqtSignal()  # ty: ignore[missing-argument]
+    confirm_signal = pyqtSignal()  # ty: ignore[missing-argument]
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(parent)  # ty: ignore[invalid-argument-type]
         self.setupUi(self)
         self.setStyleSheet(WIDGET_STYLE)
         self._config = Settings.get_instance()

@@ -1,10 +1,9 @@
 # Copyright (C) 2026 Mavinum
 # SPDX-License-Identifier: GPL-3.0-only
 
-from types import SimpleNamespace
 
 from coffeebot.system import shortcut_manager
-from coffeebot.system.systemd_manager import SystemdManager
+from coffeebot.system.systemd_manager import SystemdConfig, SystemdManager
 
 
 def test_launch_app_restarts_active_service(monkeypatch) -> None:
@@ -66,7 +65,16 @@ def test_launch_app_reports_service_restart_failure(monkeypatch) -> None:
 def test_service_status_checks_use_systemctl_unit_arguments(monkeypatch, tmp_path) -> None:
     """Query service states with systemctl's expected unit argument syntax."""
     commands = []
-    manager = SystemdManager(config=SimpleNamespace(service_name="coffeebot.service"))
+
+    class TestSettings:
+        app_name = "CoffeeBot"
+
+    monkeypatch.setattr(
+        "coffeebot.system.systemd_manager.Settings.get_instance",
+        TestSettings,
+    )
+    monkeypatch.setattr(SystemdConfig, "_find_executable", lambda _self: "/usr/bin/coffeebot")
+    manager = SystemdManager(config=SystemdConfig())
     manager.service_file = tmp_path / "coffeebot.service"
     manager.service_file.touch()
     monkeypatch.setattr(manager, "_run_cmd", lambda command: (commands.append(command) or True, ""))
