@@ -116,16 +116,13 @@ def test_settings_widget_load_and_save_round_trip(tmp_path: Path, monkeypatch: p
 
 
 @pytest.mark.usefixtures("qapp")
-def test_webdav_secret_is_stored_in_keyring_not_settings(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_webdav_secret_is_stored_in_keyring_not_settings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """Keep WebDAV credentials out of the JSON settings file."""
     monkeypatch.setattr("importlib.metadata.version", lambda _name: "1.0.0")
     default_path = tmp_path / "default.json"
     config_dir = tmp_path / "config"
     default_path.write_text(
-        json.dumps({"data_dir": str(config_dir), "logo_file": "logo.png", "backup_interval": 24}),
-        encoding="utf-8",
+        json.dumps({"data_dir": str(config_dir), "logo_file": "logo.png", "backup_interval": 24}), encoding="utf-8"
     )
     settings = Settings.configure_app(
         "coffeebot", "Mavinum", config_dir=config_dir, default_path=default_path, config_filename="config.json"
@@ -193,8 +190,8 @@ def test_open_external_url_falls_back_to_default_browser(monkeypatch: pytest.Mon
     """Use Python's browser launcher if Qt cannot handle the URL."""
     opened_urls: list[str] = []
     monkeypatch.setattr(settings_widget.QDesktopServices, "openUrl", lambda _url: False)
-    monkeypatch.setattr(settings_widget.webbrowser, "open", lambda url, new: opened_urls.append(url) or True)
+    monkeypatch.setattr(settings_widget.webbrowser, "open", lambda url, _: opened_urls.append(url) or True)
 
-    settings_widget.SettingsWidget._open_external_url("https://github.com/mavinum/CoffeeBot")
+    settings_widget.SettingsWidget._open_external_url("https://github.com/mavinum/CoffeeBot")  # noqa: SLF001
 
     assert opened_urls == ["https://github.com/mavinum/CoffeeBot"]
