@@ -49,11 +49,11 @@ with style_path.open("r", encoding="utf-8") as style_file:
 class AddUserWidget(QWidget, AddUserWidgetUI):
     """Widget to add data to create a new user."""
 
-    cancel_signal = pyqtSignal()
-    save_signal = pyqtSignal()
+    cancel_signal = pyqtSignal()  # ty: ignore[missing-argument]
+    save_signal = pyqtSignal()  # ty: ignore[missing-argument]
 
     def __init__(self, parent=None, db: UserDB | None = None):
-        super().__init__(parent)
+        super().__init__(parent)  # ty: ignore[invalid-argument-type]
         self.user_db: UserDB | None = db
         self.setupUi(self)
         self.setStyleSheet(WIDGET_STYLE)
@@ -96,12 +96,12 @@ class AddUserWidget(QWidget, AddUserWidgetUI):
 class EditUserWidget(QWidget, EditUserWidgetUI):
     """Widget to change data of existing user."""
 
-    cancel_signal = pyqtSignal()
-    delete_signal = pyqtSignal()
-    save_signal = pyqtSignal()
+    cancel_signal = pyqtSignal()  # ty: ignore[missing-argument]
+    delete_signal = pyqtSignal()  # ty: ignore[missing-argument]
+    save_signal = pyqtSignal()  # ty: ignore[missing-argument]
 
     def __init__(self, parent=None, db: UserDB | None = None):
-        super().__init__(parent)
+        super().__init__(parent)  # ty: ignore[invalid-argument-type]
         self.user_db = db
         self.user: User | None = None
         self.setupUi(self)

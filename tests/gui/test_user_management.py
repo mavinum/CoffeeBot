@@ -26,7 +26,7 @@ class _DummyUserDB:
 def test_save_user_accepts_optional_telegram_id(telegram_id: str, expected: int | None) -> None:
     """Save an empty Telegram ID as None and preserve numeric IDs."""
     database = _DummyUserDB()
-    widget = EditUserWidget(db=database)
+    widget = EditUserWidget(db=database)  # ty: ignore[invalid-argument-type]
     user = User(1, "First", "Last", "Group", "test@example.com", None, 10.0)
     widget.set_user(user)
     assert widget.telegram_label.text() == ""
