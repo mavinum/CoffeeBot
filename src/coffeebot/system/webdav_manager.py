@@ -34,6 +34,7 @@ from PyQt6.QtCore import QObject, QThread, QTimer, pyqtSignal
 from webdav4.client import Client
 
 from coffeebot.config.settings import Settings
+from coffeebot.system.credential_store import CredentialStoreError, get_webdav_credential
 
 
 class Action(Enum):
@@ -46,9 +47,9 @@ class Action(Enum):
 class WebDavWorker(QObject):
     """Worker class that handles the actual WebDAV network operations."""
 
-    finished = pyqtSignal(bool, str)
-    progress = pyqtSignal(str)
-    export_finished = pyqtSignal(bool, str)
+    finished = pyqtSignal(bool, str)  # ty: ignore[missing-argument]
+    progress = pyqtSignal(str)  # ty: ignore[missing-argument]
+    export_finished = pyqtSignal(bool, str)  # ty: ignore[missing-argument]
 
     def __init__(self):
         super().__init__()
@@ -57,8 +58,13 @@ class WebDavWorker(QObject):
     def _get_client(self) -> Client | None:
         """Create and return WebDAV client based on current settings."""
         webdav_url = str(self._config.get("webdav_url", "")).rstrip("/") + "/"
-        user = str(self._config.get("webdav_user"))
-        pwd = str(self._config.get("webdav_password"))
+        user = str(self._config.get("webdav_user") or "")
+        pwd = get_webdav_credential()
+        if not pwd:
+            operation = "load"
+            reason = "No WebDAV password or token is saved."
+            raise CredentialStoreError(operation, reason)
+
         try:
             # Bearer Token (if user is empty)
             if not user and pwd:
@@ -80,7 +86,12 @@ class WebDavWorker(QObject):
 
     def upload_export(self, local_path: Path) -> None:
         """Upload an exported file to the 'exports' folder on WebDAV."""
-        client = self._get_client()
+        try:
+            client = self._get_client()
+        except CredentialStoreError as exc:
+            logger.error(f"WebDAV credential unavailable: {exc}")
+            self.export_finished.emit(False, str(exc))
+            return
         if not client:
             self.export_finished.emit(False, "WebDAV client could not be initialized.")
             return
@@ -106,7 +117,12 @@ class WebDavWorker(QObject):
 
     def run_backup(self) -> None:
         """Perform backup process and emits signals for progress and completion."""
-        client = self._get_client()
+        try:
+            client = self._get_client()
+        except CredentialStoreError as exc:
+            logger.error(f"WebDAV credential unavailable: {exc}")
+            self.finished.emit(False, str(exc))
+            return
         if not client:
             self.finished.emit(False, "WebDAV client could not be initialized. Check settings.")
             return
@@ -156,7 +172,13 @@ class WebDavWorker(QObject):
 
     def check_connection(self) -> None:
         """Validate the configured credentials with a harmless WebDAV request."""
-        client = self._get_client()
+        try:
+            client = self._get_client()
+        except CredentialStoreError as exc:
+            logger.warning(f"WebDAV credential unavailable: {exc}")
+            self.progress.emit(str(exc))
+            self._quit_current_thread()
+            return
         if client is None:
             self.progress.emit("WebDAV connection failed")
             self._quit_current_thread()
@@ -185,9 +207,9 @@ class WebDavWorker(QObject):
 class WebDavManager(QObject):
     """Manager class that handles WebDAV backups and scheduling."""
 
-    backup_finished = pyqtSignal(bool, str)
-    backup_progress = pyqtSignal(str)
-    export_finished = pyqtSignal(bool, str)
+    backup_finished = pyqtSignal(bool, str)  # ty: ignore[missing-argument]
+    backup_progress = pyqtSignal(str)  # ty: ignore[missing-argument]
+    export_finished = pyqtSignal(bool, str)  # ty: ignore[missing-argument]
 
     def __init__(self):
         super().__init__()
@@ -217,7 +239,7 @@ class WebDavManager(QObject):
         if action == Action.BACKUP:
             self._thread.started.connect(self._worker.run_backup)
         elif action == Action.EXPORT and file is not None:
-            self._thread.started.connect(lambda: self._worker.upload_export(file))  # ty: ignore[unresolved-attribute]
+            self._thread.started.connect(lambda: self._worker.upload_export(file))  # ty: ignore[missing-union-attribute]
             self._worker.export_finished.connect(self.export_finished.emit)
         self._worker.progress.connect(self.backup_progress.emit)
         self._worker.finished.connect(self.backup_finished.emit)

@@ -32,7 +32,7 @@ from typing import Any
 from loguru import logger
 from openpyxl import Workbook
 from PyQt6 import uic
-from PyQt6.QtCore import QDir, Qt, QUrl, pyqtSignal
+from PyQt6.QtCore import QDir, QSignalBlocker, Qt, QUrl, pyqtSignal
 from PyQt6.QtGui import QDesktopServices, QPixmap
 from PyQt6.QtWidgets import QCheckBox, QDoubleSpinBox, QFileDialog, QLineEdit, QSpinBox, QTextEdit, QWidget
 
@@ -40,6 +40,7 @@ from coffeebot.auth import set_master_password
 from coffeebot.config.settings import Settings
 from coffeebot.db.statistics import StatsRepo
 from coffeebot.db.users import UserDB
+from coffeebot.system.credential_store import CredentialStoreError, get_webdav_credential, store_webdav_credential
 from coffeebot.system.systemd_manager import SystemdManager
 
 basedir = Path(__file__).parent
@@ -55,15 +56,15 @@ with style_path.open("r", encoding="utf-8") as style_file:
 class SettingsWidget(QWidget, SettingsWidgetUI):
     """Editor Widget for all coffeebot settings."""
 
-    cancel_signal = pyqtSignal()
-    save_signal = pyqtSignal()
-    restart_signal = pyqtSignal()
-    close_signal = pyqtSignal()
-    webdav_settings_applied = pyqtSignal()
-    webdav_export = pyqtSignal(str)
+    cancel_signal = pyqtSignal()  # ty: ignore[missing-argument]
+    save_signal = pyqtSignal()  # ty: ignore[missing-argument]
+    restart_signal = pyqtSignal()  # ty: ignore[missing-argument]
+    close_signal = pyqtSignal()  # ty: ignore[missing-argument]
+    webdav_settings_applied = pyqtSignal()  # ty: ignore[missing-argument]
+    webdav_export = pyqtSignal(str)  # ty: ignore[missing-argument]
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, parent: QWidget | None = None):
+        super().__init__(parent)  # ty: ignore[invalid-argument-type]
         self.setupUi(self)
         self.setStyleSheet(WIDGET_STYLE)
         self.manager = SystemdManager()
@@ -86,7 +87,6 @@ class SettingsWidget(QWidget, SettingsWidgetUI):
             "backup_interval": getattr(self, "backup_interval_spin", None),
             "webdav_url": getattr(self, "webdav_url_edit", None),
             "webdav_user": getattr(self, "webdav_username_edit", None),
-            "webdav_password": getattr(self, "webdav_password_edit", None),
             "restart_timeout": getattr(self, "restart_timeout_spin", None),
             "lock_timeout": getattr(self, "lock_timeout_spin", None),
         }
@@ -117,6 +117,7 @@ class SettingsWidget(QWidget, SettingsWidgetUI):
         self.webdav_url_edit.textChanged.connect(self._mark_webdav_modified)
         self.webdav_username_edit.textChanged.connect(self._mark_webdav_modified)
         self.webdav_password_edit.textChanged.connect(self._mark_webdav_modified)
+        self.webdav_password_edit.setPlaceholderText("Leave blank to keep; enter new to replace")
         self.webdav_pwd_button.toggled.connect(lambda x: self._toggle_password_visibility(x, self.webdav_password_edit))
         self.webdav_enabled_check.stateChanged.connect(self._mark_webdav_modified)
         self.webdav_enabled_check.stateChanged.connect(self._update_webdav_ui_state)
@@ -208,6 +209,9 @@ class SettingsWidget(QWidget, SettingsWidgetUI):
 
             widget.blockSignals(False)
 
+        with QSignalBlocker(self.webdav_password_edit):
+            self.webdav_password_edit.clear()
+
         # Load version
         self._load_version()
 
@@ -257,6 +261,9 @@ class SettingsWidget(QWidget, SettingsWidgetUI):
                 vals[key] = [ln for ln in lines if ln]
 
         if not self._validate_webdav_settings(vals):
+            return
+
+        if not self._store_webdav_password():
             return
 
         # Handle logo update
@@ -650,7 +657,6 @@ class SettingsWidget(QWidget, SettingsWidgetUI):
             "backup_interval": self.backup_interval_spin.value(),
             "webdav_url": self.webdav_url_edit.text().strip(),
             "webdav_user": self.webdav_username_edit.text().strip(),
-            "webdav_password": self.webdav_password_edit.text(),
         }
 
     def _validate_webdav_settings(self, values: dict[str, Any]) -> bool:
@@ -660,10 +666,9 @@ class SettingsWidget(QWidget, SettingsWidgetUI):
             return True
 
         url = str(values.get("webdav_url", "")).strip()
-        password = str(values.get("webdav_password", ""))
-        if not url or not password:
-            self.webdav_status_label.setText("URL and pwd/token are required")
-            logger.warning("WebDAV settings rejected: URL or password/token is missing")
+        if not url:
+            self.webdav_status_label.setText("WebDAV URL is required")
+            logger.warning("WebDAV settings rejected: URL is missing")
             return False
 
         interval = int(str(values.get("backup_interval", 0)).strip())
@@ -673,12 +678,47 @@ class SettingsWidget(QWidget, SettingsWidgetUI):
             return False
 
         values["backup_interval"] = interval
+        credential = self.webdav_password_edit.text()
+        if not credential:
+            try:
+                credential = get_webdav_credential()
+            except CredentialStoreError as exc:
+                self.webdav_status_label.setText(str(exc))
+                logger.error(f"Could not validate WebDAV credential: {exc}")
+                return False
+
+        if not credential:
+            self.webdav_status_label.setText("App password or token required")
+            logger.warning("WebDAV settings rejected: credential is missing")
+            return False
+
+        return True
+
+    def _store_webdav_password(self) -> bool:
+        """Store a newly entered WebDAV credential without persisting it in settings."""
+        credential = self.webdav_password_edit.text()
+        if not credential:
+            return True
+
+        try:
+            store_webdav_credential(credential)
+        except CredentialStoreError as exc:
+            self.webdav_status_label.setText(str(exc))
+            logger.error(f"Could not store WebDAV credential: {exc}")
+            return False
+
+        with QSignalBlocker(self.webdav_password_edit):
+            self.webdav_password_edit.clear()
+        self.webdav_status_label.setText("Credential saved to OS keyring.")
         return True
 
     def _apply_webdav_settings(self) -> None:
         """Persist and apply only the WebDAV settings."""
         values = self._collect_webdav_settings()
         if not self._validate_webdav_settings(values):
+            return
+
+        if not self._store_webdav_password():
             return
 
         self._persist_vals(values)
