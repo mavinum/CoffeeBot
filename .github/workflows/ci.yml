@@ -3,10 +3,9 @@ name: CI
 on:
   push:
     branches: [ "**" ]
-    tags:
-      - 'v*'
   pull_request:
     branches: [ "next", "master" ]
+  workflow_call:
 
 permissions:
   contents: read
