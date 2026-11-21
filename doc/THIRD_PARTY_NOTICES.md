@@ -18,6 +18,7 @@ If you distribute a bundled application, include the applicable PyQt, Qt, SIP, a
 | --- | --- | --- |
 | bcrypt | `Apache-2.0` | [pyca/bcrypt](https://github.com/pyca/bcrypt) |
 | filelock | `MIT` | [tox-dev/py-filelock](https://github.com/tox-dev/py-filelock) |
+| keyring | `MIT` | [jaraco/keyring](https://github.com/jaraco/keyring) |
 | loguru | `MIT` | [Delgan/loguru](https://github.com/Delgan/loguru) |
 | numpy | `BSD-3-Clause`, `0BSD`, `MIT`, `Zlib`, and `CC0-1.0` components | [numpy](https://github.com/numpy/numpy) |
 | openpyxl | `MIT` | [openpyxl](https://foss.heptapod.net/openpyxl/openpyxl) |
@@ -25,7 +26,7 @@ If you distribute a bundled application, include the applicable PyQt, Qt, SIP, a
 | platformdirs | `MIT` | [tox-dev/platformdirs](https://github.com/tox-dev/platformdirs) |
 | pyisemail | `MIT` | [michaelherold/pyIsEmail](https://github.com/michaelherold/pyIsEmail) |
 | PyQt6 | `GPL-3.0-only` | [Riverbank Computing](https://www.riverbankcomputing.com/software/pyqt/) |
-| python-telegram-bot | `LGPL-3.0-only` | [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) |
+| secretstorage | `BSD-3-Clause` | [mitya57/secretstorage](https://github.com/mitya57/secretstorage) |
 | webdav4 | `MIT` | [skshetry/webdav4](https://github.com/skshetry/webdav4) |
 
 License identifiers above are based on upstream package metadata and license files. Copyright holders and the full license terms are identified in the upstream distributions; preserve those notices when copying or redistributing their code. In particular, NumPy and Qt distributions may include additional license and attribution files beyond the summary identifiers shown here.
