@@ -190,7 +190,7 @@ def test_open_external_url_falls_back_to_default_browser(monkeypatch: pytest.Mon
     """Use Python's browser launcher if Qt cannot handle the URL."""
     opened_urls: list[str] = []
     monkeypatch.setattr(settings_widget.QDesktopServices, "openUrl", lambda _url: False)
-    monkeypatch.setattr(settings_widget.webbrowser, "open", lambda url, _: opened_urls.append(url) or True)
+    monkeypatch.setattr(settings_widget.webbrowser, "open", lambda url, new: opened_urls.append(url) or True)  # noqa: ARG005
 
     settings_widget.SettingsWidget._open_external_url("https://github.com/mavinum/CoffeeBot")  # noqa: SLF001
 
