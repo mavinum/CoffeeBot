@@ -27,7 +27,7 @@ from pyisemail import is_email
 from PyQt6 import uic
 from PyQt6.QtCore import QDir, Qt, pyqtSignal
 from PyQt6.QtGui import QValidator
-from PyQt6.QtWidgets import QInputDialog, QLineEdit, QTableWidgetItem, QWidget
+from PyQt6.QtWidgets import QLineEdit, QTableWidgetItem, QWidget
 
 from coffeebot.auth import set_master_password, verify_password
 from coffeebot.config.settings import Settings
