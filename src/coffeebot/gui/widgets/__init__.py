@@ -19,5 +19,5 @@ for more details.
 ################################################################################
 """
 
-from .custom_widgets import PasswordDialog, PriceItem
+from .custom_widgets import PriceItem
 from .user_management import AddUserWidget

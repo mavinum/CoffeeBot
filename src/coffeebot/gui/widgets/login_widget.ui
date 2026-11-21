@@ -76,7 +76,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Please enter the master password and confirm to unlock restriced areas!</string>
+      <string>Please enter the master password to unlock restricted areas.</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -123,12 +123,15 @@
          <property name="echoMode">
           <enum>QLineEdit::EchoMode::Password</enum>
          </property>
+         <property name="placeholderText">
+          <string>Master password</string>
+         </property>
          <property name="clearButtonEnabled">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="0" colspan="3">
         <widget class="QLabel" name="status_label">
          <property name="font">
           <font>
@@ -229,6 +232,19 @@
          </property>
          <property name="btnType" stdset="0">
           <string>command</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLineEdit" name="confirm_password_edit">
+         <property name="echoMode">
+          <enum>QLineEdit::EchoMode::Password</enum>
+         </property>
+         <property name="placeholderText">
+          <string>Confirm master password</string>
+         </property>
+         <property name="clearButtonEnabled">
+          <bool>false</bool>
          </property>
         </widget>
        </item>

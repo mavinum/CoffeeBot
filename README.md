@@ -1,4 +1,4 @@
-<h1><img src="src/coffeebot/ressources/icons/icon.svg" alt="CoffeeBot icon" width="40" align="center"> CoffeeBot</h1>
+<h1><img src="src/coffeebot/ressources/icons/icon.svg" alt="CoffeeBot icon" width="70" align="center"> CoffeeBot</h1>
 
 [![CI](https://github.com/mavinum/CoffeeBot/actions/workflows/ci.yml/badge.svg)](https://github.com/mavinum/CoffeeBot/actions)
 [![PyPI version](https://img.shields.io/pypi/v/coffeebot)](https://pypi.org/project/coffeebot/)

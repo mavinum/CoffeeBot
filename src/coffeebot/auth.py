@@ -57,13 +57,10 @@ def verify_password(password: str) -> bool:
     """
     Return ``True`` if ``password`` matches the stored master password.
 
-    If no password has been set yet, ``False`` is returned, except
-    ``password`` is also an empty string.
+    If no password has been set yet, return ``False``.
     """
     stored_hash = Settings.get_instance().get(_MASTER_HASH_KEY, None)
     if stored_hash is None:
-        # if password == "":
-        #     return True
         return False
     try:
         return bcrypt.checkpw(password.encode("utf-8"), str(stored_hash).encode("utf-8"))
