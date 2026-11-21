@@ -22,13 +22,14 @@ for more details.
 import typing
 from pathlib import Path
 
+from loguru import logger
 from pyisemail import is_email
 from PyQt6 import uic
 from PyQt6.QtCore import QDir, Qt, pyqtSignal
 from PyQt6.QtGui import QValidator
-from PyQt6.QtWidgets import QInputDialog, QLineEdit, QPushButton, QTableWidgetItem, QWidget
+from PyQt6.QtWidgets import QLineEdit, QTableWidgetItem, QWidget
 
-from coffeebot.auth import verify_password
+from coffeebot.auth import set_master_password, verify_password
 from coffeebot.config.settings import Settings
 
 basedir = Path(__file__).parent
@@ -59,10 +60,6 @@ class PriceItem(QTableWidgetItem):
             return super().__lt__(other)
 
 
-class PriceButton(QPushButton):
-    """Round button with price and description label below."""
-
-
 class EmailValidator(QValidator):
     """Validate the string syntax of an email input field."""
 
@@ -79,17 +76,6 @@ class EmailValidator(QValidator):
         return input_str.strip()
 
 
-class EmailLineEdit(QLineEdit):
-    """LineEdit for typing email addresses with validation."""
-
-
-class PasswordDialog(QInputDialog):
-    """Dialog to input password for authentication."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-
 class AuthenticationWidget(QWidget, AuthenticationWidgetUI):
     """Widget with password prompt for user authentication."""
 
@@ -102,24 +88,75 @@ class AuthenticationWidget(QWidget, AuthenticationWidgetUI):
         self.setupUi(self)
         self.setStyleSheet(WIDGET_STYLE)
         self._invalid = False
+        self._setup_mode = False
 
         self.cancel_button.clicked.connect(self._cancel)
         self.confirm_button.clicked.connect(self._authenticate)
-        self.password_edit.returnPressed.connect(self._authenticate)
+        self.password_edit.returnPressed.connect(self._on_password_returned)
+        self.confirm_password_edit.returnPressed.connect(self._authenticate)
         self.show_pwd_button.toggled.connect(self._toggle_pwd_visibility)
+        self._update_auth_mode()
+
+    def _update_auth_mode(self) -> None:
+        """Switch between first-run password setup and regular authentication."""
+        self._setup_mode = not bool(self._config.get("master_pwd_hash"))
+        self.confirm_password_edit.setVisible(self._setup_mode)
+        if self._setup_mode:
+            self.title_label.setText("Set Master Password")
+            self.label.setText("Create and confirm a master password to unlock restricted areas.")
+        else:
+            self.title_label.setText("Authentication")
+            self.label.setText("Please enter the master password to unlock restricted areas.")
+
+    def _on_password_returned(self) -> None:
+        """Move to confirmation on first run, or authenticate on normal login."""
+        if self._setup_mode:
+            self.confirm_password_edit.setFocus()
+            return
+        self._authenticate()
 
     def _clear(self) -> None:
         """Clear all input filds in the widget."""
         self.password_edit.clear()
+        self.confirm_password_edit.clear()
         self.status_label.clear()
 
         if self._invalid:
-            self.password_edit.setStyleSheet("background-color: rgb(200, 183, 183);")
+            self.password_edit.setStyleSheet("")
+            self.confirm_password_edit.setStyleSheet("")
             self._invalid = False
 
     def _authenticate(self) -> None:
         """Check password and send confirm signal, if correct."""
         text = self.password_edit.text()
+        if self._setup_mode:
+            if not text:
+                self._invalid = True
+                self.status_label.setText("Password cannot be empty")
+                self.password_edit.setStyleSheet("background-color: rgb(182, 82, 93);")
+                self.password_edit.setFocus()
+                return
+
+            if text != self.confirm_password_edit.text():
+                self._invalid = True
+                self.status_label.setText("Passwords do not match")
+                self.confirm_password_edit.setStyleSheet("background-color: rgb(182, 82, 93);")
+                self.confirm_password_edit.selectAll()
+                self.confirm_password_edit.setFocus()
+                return
+
+            try:
+                set_master_password(text)
+            except (OSError, ValueError) as exc:
+                logger.error(f"Failed to save first-run master password: {exc}")
+                self.status_label.setText("Failed to save master password")
+                return
+
+            self._update_auth_mode()
+            self._clear()
+            self.confirm_signal.emit(text)
+            return
+
         if verify_password(text):
             self._clear()
             self.confirm_signal.emit(text)
@@ -132,7 +169,9 @@ class AuthenticationWidget(QWidget, AuthenticationWidgetUI):
     @typing.override
     def _toggle_pwd_visibility(self, checked: bool) -> None:
         """Toggle character visibility of password edit."""
-        self.password_edit.setEchoMode(QLineEdit.EchoMode.Normal if checked else QLineEdit.EchoMode.Password)
+        echo_mode = QLineEdit.EchoMode.Normal if checked else QLineEdit.EchoMode.Password
+        self.password_edit.setEchoMode(echo_mode)
+        self.confirm_password_edit.setEchoMode(echo_mode)
 
     def _cancel(self) -> None:
         """Cancel new user registration and return to home screen."""

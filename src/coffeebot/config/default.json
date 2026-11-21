@@ -41,6 +41,5 @@
     "restart_timeout": 10,
     "lock_timeout": 20,
     "backup_interval": 24,
-    "log_level": "INFO",
-    "master_pwd_hash": "$2b$12$qdPpge45nUK161uvtP8wJeFWA9wqme6vPkBAx9PoDfCg/xwxMeAne"
+    "log_level": "INFO"
 }
