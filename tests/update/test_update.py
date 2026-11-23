@@ -35,6 +35,36 @@ def test_update_checker_is_newer(monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     assert checker._is_newer("0.9.9") is False  # noqa: SLF001
 
 
+def test_update_checker_comparison_error_does_not_report_up_to_date(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Keep version-comparison failures distinct from a successful no-update result."""
+    monkeypatch.setattr(metadata, "version", lambda _app_name: "")
+    default_path = tmp_path / "default.json"
+    default_path.write_text('{"bot_startup": false}', encoding="utf-8")
+    Settings.configure_app(
+        "coffeebot-test-update-invalid-version", "Mavinum", config_dir=tmp_path / "config", default_path=default_path
+    )
+    checker = UpdateChecker(auto_check=False)
+
+    async def latest_version() -> str:
+        return "1.0.1"
+
+    monkeypatch.setattr(checker, "_fetch_latest_version", latest_version)
+    errors = []
+    up_to_date = []
+    checker.error.connect(errors.append)
+    checker.up_to_date.connect(up_to_date.append)
+    loop = asyncio.new_event_loop()
+    try:
+        checker._run_check(loop)  # noqa: SLF001
+    finally:
+        loop.close()
+
+    assert errors == ["Current app version is not configured for update checking."]
+    assert up_to_date == []
+
+
 def test_update_checker_fetch_latest_version(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """Test fetching the latest version from PyPi."""
     monkeypatch.setattr(metadata, "version", lambda _app_name: "1.0.0")

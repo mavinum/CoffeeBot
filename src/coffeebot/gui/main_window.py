@@ -75,10 +75,10 @@ class CoffeeBot(QMainWindow, MainWindowUI):
         self._enjoy_gif: QMovie = QMovie(str(basedir / "icons" / "enjoy_gif.gif"), parent=self)
         self._gif_timer = QTimer()
 
-        if bool(self.config.get("auto_check_update", False)):
-            self._init_updater()
-        else:
-            logger.info("Automatic update checks are disabled - updater not started")
+        auto_check_update = bool(self.config.get("auto_check_update", False))
+        if not auto_check_update:
+            logger.info("Automatic update checks are disabled; manual update checks remain available")
+        self._init_updater()
 
         self._configure_webdav()
 
@@ -644,6 +644,7 @@ class CoffeeBot(QMainWindow, MainWindowUI):
 
     def closeEvent(self, event) -> None:  # noqa: N802
         """Cleanup before closing."""
+        self.update_checker.stop()
         if self.webdav_manager is not None:
             self.webdav_manager.stop()
         self.db.close()

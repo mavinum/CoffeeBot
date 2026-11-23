@@ -1,7 +1,7 @@
 <h1><img src="src/coffeebot/ressources/icons/icon.svg" alt="CoffeeBot icon" width="70" align="center"> CoffeeBot</h1>
 
 [![CI](https://github.com/mavinum/CoffeeBot/actions/workflows/ci.yml/badge.svg)](https://github.com/mavinum/CoffeeBot/actions)
-[![PyPI version](https://img.shields.io/pypi/v/coffeebot)](https://pypi.org/project/coffeebot/)
+[![PyPI version](https://img.shields.io/pypi/v/coffeebot?cacheSeconds=60)](https://pypi.org/project/coffeebot/)
 ![Python version](https://img.shields.io/badge/python-3.14-blue)
 [![License: GPL-3.0-only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://github.com/mavinum/CoffeeBot/blob/master/LICENSE)
 [![Platform: Linux](https://img.shields.io/badge/platform-Linux-FCC624?logo=linux&logoColor=black)](https://github.com/mavinum/CoffeeBot)
@@ -9,6 +9,10 @@
 
 CoffeeBot is a lightweight open source coffee and beverage billing companion for shared spaces.<br>
 It helps teams track purchases, manage users and bring the classic "tick list" to the digital age. All you need is a RaspberryPi with touchscreen.
+
+What started as a small project for our groups coffee machine at university ended in this (maybe a bit over-engineered) coffeebot app. If you also think your groups kitchen at work deserves something better than a loose sheet with some names and ticks, feel free to try coffeebot!
+
+If you encounter a bug or have an idea for an improvement, please report it in the GitHub Issues section. CoffeeBot is primarily intended for private or community use and has not been certified as compliant with any particular data-protection or other legal requirements. Operators are responsible for assessing their obligations and protecting any personal data they process. See the [operator data privacy guide](doc/OPERATORS_DATA_PRIVACY.md).
 
 ## Features
 - **User management** – create, edit, and remove users
@@ -19,7 +23,7 @@ It helps teams track purchases, manage users and bring the classic "tick list" t
 - **Telegram integration** – coming soon; Telegram connectivity is not available in this release
 - **Small footprint** – intended for use on a Raspberry Pi with touchscreen
 
-![CoffeeBot main window](doc/screenshot.png)
+![CoffeeBot main window](https://raw.githubusercontent.com/mavinum/CoffeeBot/master/doc/screenshot.png)
 
 ## Download / Install
 Use uv to install on your system (recommended):

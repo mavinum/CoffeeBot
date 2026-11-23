@@ -73,13 +73,20 @@ class UpdateChecker(QThread):
             return
 
         if latest is None:
-            self.up_to_date.emit("No update available; you are all up to date!")
+            self.up_to_date.emit("Couldn't retrieve release versions.")
             return
 
-        if self._is_newer(latest):
+        try:
+            is_newer = self._is_newer(latest)
+        except Exception as exc:
+            self.error.emit(str(exc))
+            logger.error(f"Failed to compare package versions: {exc}")
+            return
+        if is_newer:
             self.latest_version = latest
             self.update_available.emit(latest)
             return
+        self.up_to_date.emit(f"No update available; current version {self.settings.version} is up to date.")
 
     def request_check(self) -> None:
         """Request an immediate update check."""
@@ -103,17 +110,10 @@ class UpdateChecker(QThread):
         """Check if latest version is newer than current version."""
         current_version = self.settings.version
         if not current_version:
-            error_message = "Current app version is not configured for update checking."
-            logger.error(error_message)
-            self.error.emit(error_message)
-            return False
+            msg = "Current app version is not configured for update checking."
+            raise ValueError(msg)
 
-        try:
-            return package_version.parse(latest) > package_version.parse(current_version)
-        except Exception as exc:
-            logger.error(f"Failed to parse version numbers: {exc}.")
-            self.error.emit(str(exc))
-            return False
+        return package_version.parse(latest) > package_version.parse(current_version)
 
     def stop(self) -> None:
         """Stop thread gracefully."""
