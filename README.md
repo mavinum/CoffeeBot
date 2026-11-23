@@ -10,6 +10,10 @@
 CoffeeBot is a lightweight open source coffee and beverage billing companion for shared spaces.<br>
 It helps teams track purchases, manage users and bring the classic "tick list" to the digital age. All you need is a RaspberryPi with touchscreen.
 
+What started as a small project for our groups coffee machine at university ended in this (maybe a bit over-engineered) coffeebot app. If you also think your groups kitchen at work deserves something better than a loose sheet with some names and ticks, feel free to try coffeebot!
+
+If you encounter a bug or have an idea for an improvement, please report it in the GitHub Issues section. CoffeeBot is primarily intended for private or community use and has not been certified as compliant with any particular data-protection or other legal requirements. Operators are responsible for assessing their obligations and protecting any personal data they process. See the [operator data privacy guide](doc/OPERATORS_DATA_PRIVACY.md).
+
 ## Features
 - **User management** – create, edit, and remove users
 - **Flexible pricing** – configure per‑category rates or custom price tables

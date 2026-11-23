@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1] - 2026-11-23
+
+### Fixed
+- Manual update checks now work when automatic checks are disabled and show a completion status when the installed version is current.
+- Spin boxes with hidden buttons display their values and accept keyboard input.
+
 ## [1.0.0] - 2026-11-19
 
 Initial public release of CoffeeBot
