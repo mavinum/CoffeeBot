@@ -95,6 +95,14 @@ QSpinBox::focus {
 	border-radius: 3px;
 }
 
+QSpinBox::up-button,
+QSpinBox::down-button,
+QDoubleSpinBox::up-button,
+QDoubleSpinBox::down-button {
+	subcontrol-origin: border;
+	width: 0px;
+}
+
 QLabel {
 	color: rgb(80, 22, 22);
 	font-size: 15px;

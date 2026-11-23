@@ -1,7 +1,7 @@
 <h1><img src="src/coffeebot/ressources/icons/icon.svg" alt="CoffeeBot icon" width="70" align="center"> CoffeeBot</h1>
 
 [![CI](https://github.com/mavinum/CoffeeBot/actions/workflows/ci.yml/badge.svg)](https://github.com/mavinum/CoffeeBot/actions)
-[![PyPI version](https://img.shields.io/pypi/v/coffeebot)](https://pypi.org/project/coffeebot/)
+[![PyPI version](https://img.shields.io/pypi/v/coffeebot?cacheSeconds=60)](https://pypi.org/project/coffeebot/)
 ![Python version](https://img.shields.io/badge/python-3.14-blue)
 [![License: GPL-3.0-only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://github.com/mavinum/CoffeeBot/blob/master/LICENSE)
 [![Platform: Linux](https://img.shields.io/badge/platform-Linux-FCC624?logo=linux&logoColor=black)](https://github.com/mavinum/CoffeeBot)
@@ -19,7 +19,7 @@ It helps teams track purchases, manage users and bring the classic "tick list" t
 - **Telegram integration** – coming soon; Telegram connectivity is not available in this release
 - **Small footprint** – intended for use on a Raspberry Pi with touchscreen
 
-![CoffeeBot main window](doc/screenshot.png)
+![CoffeeBot main window](https://raw.githubusercontent.com/mavinum/CoffeeBot/master/doc/screenshot.png)
 
 ## Download / Install
 Use uv to install on your system (recommended):
