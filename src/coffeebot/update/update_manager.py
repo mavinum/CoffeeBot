@@ -53,7 +53,7 @@ class UpdateManager(QThread):
 
         try:
             result: subprocess.CompletedProcess = subprocess.run(
-                ["uv", "tool", "upgrade", app_name],  # noqa: S607
+                ["uv", "tool", "install", "--upgrade", app_name],  # noqa: S607
                 capture_output=True,
                 text=True,
                 timeout=300,
