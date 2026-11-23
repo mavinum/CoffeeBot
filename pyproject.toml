@@ -1,6 +1,6 @@
 [project]
 name = "coffeebot"
-version = "1.0.1"
+version = "1.0.2"
 description = "Coffeebot - open source coffee and beverage billing system"
 authors = [{ name = "Mavinum", email = "mavinum@tutanota.de" }]
 readme = "README.md"
